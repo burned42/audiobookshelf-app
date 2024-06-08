@@ -189,6 +189,20 @@ class ApiHandler(var ctx:Context) {
     }
   }
 
+  fun getRecentEpisodes(libraryId:String, cb: (List<PodcastEpisode>) -> Unit) {
+    getRequest("/api/libraries/$libraryId/recent-episodes?limit=25&page=0", null, null) {
+      val items = mutableListOf<PodcastEpisode>()
+      if (it.has("episodes")) {
+        val array = it.getJSONArray("episodes")
+        for (i in 0 until array.length()) {
+          val item = jacksonMapper.readValue<PodcastEpisode>(array.get(i).toString())
+          items.add(item)
+        }
+      }
+      cb(items)
+    }
+  }
+
   fun getAllItemsInProgress(cb: (List<ItemInProgress>) -> Unit) {
     getRequest("/api/me/items-in-progress", null, null) {
       val items = mutableListOf<ItemInProgress>()

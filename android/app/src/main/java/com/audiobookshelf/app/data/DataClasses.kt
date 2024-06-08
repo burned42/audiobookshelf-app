@@ -53,7 +53,7 @@ class Podcast(
     audioTracks.forEach { at ->
       if (episodes?.find{ it.audioTrack?.localFileId == at.localFileId } == null) {
         val localEpisodeId = "local_ep_" + at.localFileId
-        val newEpisode = PodcastEpisode(localEpisodeId,(episodes?.size ?: 0) + 1,null,null,at.title,null,null,null, null, null, at,null,at.duration,0, null, localEpisodeId)
+        val newEpisode = PodcastEpisode(localEpisodeId,(episodes?.size ?: 0) + 1,null,null,at.title,null,null,null, null, null, at,null,at.duration,0, null, localEpisodeId, null, null)
         episodes?.add(newEpisode)
       }
     }
@@ -67,7 +67,7 @@ class Podcast(
   @JsonIgnore
   override fun addAudioTrack(audioTrack:AudioTrack) {
     val localEpisodeId = "local_ep_" + audioTrack.localFileId
-    val newEpisode = PodcastEpisode(localEpisodeId,(episodes?.size ?: 0) + 1,null,null,audioTrack.title,null,null,null, null, null,audioTrack,null,audioTrack.duration,0, null, localEpisodeId)
+    val newEpisode = PodcastEpisode(localEpisodeId,(episodes?.size ?: 0) + 1,null,null,audioTrack.title,null,null,null, null, null,audioTrack,null,audioTrack.duration,0, null, localEpisodeId, null, null)
     episodes?.add(newEpisode)
 
     var index = 1
@@ -96,7 +96,7 @@ class Podcast(
   @JsonIgnore
   fun addEpisode(audioTrack:AudioTrack, episode:PodcastEpisode):PodcastEpisode {
     val localEpisodeId = "local_ep_" + episode.id
-    val newEpisode = PodcastEpisode(localEpisodeId,(episodes?.size ?: 0) + 1,episode.episode,episode.episodeType,episode.title,episode.subtitle,episode.description,null,null,null,audioTrack,episode.chapters,audioTrack.duration,episode.size, episode.id, localEpisodeId)
+    val newEpisode = PodcastEpisode(localEpisodeId,(episodes?.size ?: 0) + 1,episode.episode,episode.episodeType,episode.title,episode.subtitle,episode.description,null,null,null,audioTrack,episode.chapters,audioTrack.duration,episode.size, episode.id, localEpisodeId, null, null)
     episodes?.add(newEpisode)
 
     var index = 1
@@ -256,7 +256,9 @@ data class PodcastEpisode(
   var duration:Double?,
   var size:Long?,
   var serverEpisodeId:String?, // For local podcasts to match with server podcasts
-  var localEpisodeId:String? // For Android Auto server episodes with local copy
+  var localEpisodeId:String?, // For Android Auto server episodes with local copy
+  var libraryItemId:String?,
+  var podcast: Podcast?
 ) {
   @JsonIgnore
   fun getMediaDescription(libraryItem:LibraryItemWrapper, progress:MediaProgressWrapper?, ctx: Context): MediaDescriptionCompat {
