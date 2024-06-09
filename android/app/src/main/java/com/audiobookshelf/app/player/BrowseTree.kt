@@ -48,6 +48,13 @@ class BrowseTree(
       putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, getUriToDrawable(R.drawable.icon_library_folder).toString())
     }.build()
 
+    val recentEpisodesMetadata = MediaMetadataCompat.Builder().apply {
+      putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, RECENT_EPISODES_ROOT)
+      putString(MediaMetadataCompat.METADATA_KEY_TITLE, "Recent Episodes")
+      putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, getUriToDrawable(R.drawable.icon_monochrome).toString())
+    }.build()
+    rootList += recentEpisodesMetadata
+
     if (itemsInProgress.isNotEmpty()) {
       rootList += continueListeningMetadata
     }
@@ -75,3 +82,4 @@ const val AUTO_BROWSE_ROOT = "/"
 const val CONTINUE_ROOT = "__CONTINUE__"
 const val DOWNLOADS_ROOT = "__DOWNLOADS__"
 const val LIBRARIES_ROOT = "__LIBRARIES__"
+const val RECENT_EPISODES_ROOT = "__RECENT_EPISODES__"

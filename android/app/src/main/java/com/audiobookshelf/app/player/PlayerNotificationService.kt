@@ -977,6 +977,7 @@ class PlayerNotificationService : MediaBrowserServiceCompat()  {
   private val LIBRARIES_ROOT = "__LIBRARIES__"
   private val DOWNLOADS_ROOT = "__DOWNLOADS__"
   private val CONTINUE_ROOT = "__CONTINUE__"
+  private val RECENT_EPISODES_ROOT = "__RECENT_EPISODES__"
   private lateinit var browseTree:BrowseTree
 
 
@@ -1087,6 +1088,19 @@ class PlayerNotificationService : MediaBrowserServiceCompat()  {
         val children = browseTree[parentMediaId]?.map { item ->
           Log.d(tag, "Loading Browser Media Item ${item.description.title}")
           MediaBrowserCompat.MediaItem(item.description, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+        }
+        result.sendResult(children as MutableList<MediaBrowserCompat.MediaItem>?)
+      }
+    } else if (parentMediaId == RECENT_EPISODES_ROOT) {
+      Log.d(tag, "load recent episodes ${mediaManager.serverLibraries[0].id}")
+      mediaManager.loadRecentEpisodes(mediaManager.serverLibraries[0].id) { podcastEpisodes ->
+        val children = podcastEpisodes.map { podcastEpisode ->
+          val progress = mediaManager.serverUserMediaProgress.find { it.episodeId == podcastEpisode.id && it.libraryItemId == podcastEpisode.libraryItemId }
+          val libraryItemId = podcastEpisode.libraryItemId!!
+          val podcastTitle = podcastEpisode.podcast!!.metadata.title
+          val libraryItemWrapper = RecentEpisodeLibraryItem(libraryItemId, podcastTitle)
+          val description = podcastEpisode.getMediaDescription(libraryItemWrapper, progress, ctx)
+          MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
         }
         result.sendResult(children as MutableList<MediaBrowserCompat.MediaItem>?)
       }

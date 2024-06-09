@@ -264,6 +264,8 @@ data class PodcastEpisode(
   fun getMediaDescription(libraryItem:LibraryItemWrapper, progress:MediaProgressWrapper?, ctx: Context): MediaDescriptionCompat {
     val coverUri = if (libraryItem is LocalLibraryItem) {
       libraryItem.getCoverUri(ctx)
+    } else if (libraryItem is RecentEpisodeLibraryItem) {
+      libraryItem.getCoverUri()
     } else {
       (libraryItem as LibraryItem).getCoverUri()
     }

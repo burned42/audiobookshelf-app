@@ -1,8 +1,10 @@
 package com.audiobookshelf.app.data
 
 import android.content.Context
+import android.net.Uri
 import android.support.v4.media.MediaDescriptionCompat
 import android.util.Log
+import com.audiobookshelf.app.device.DeviceManager
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonSubTypes
@@ -92,6 +94,23 @@ data class LocalFolder(
 open class LibraryItemWrapper(var id:String) {
   @JsonIgnore
   open fun getMediaDescription(progress:MediaProgressWrapper?, ctx: Context): MediaDescriptionCompat { return MediaDescriptionCompat.Builder().build() }
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class RecentEpisodeLibraryItem(
+  id:String,
+  var title:String,
+) : LibraryItemWrapper(id) {
+  @JsonIgnore
+  fun getCoverUri(): Uri {
+    return Uri.parse("${DeviceManager.serverAddress}/api/items/$id/cover?token=${DeviceManager.token}")
+  }
+
+  override fun getMediaDescription(progress:MediaProgressWrapper?, ctx: Context): MediaDescriptionCompat {
+    return MediaDescriptionCompat.Builder()
+      .setTitle(title)
+      .build()
+  }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -142,6 +142,12 @@ class MediaManager(private var apiHandler: ApiHandler, var ctx: Context) {
     }
   }
 
+  fun loadRecentEpisodes(libraryId:String, cb: (List<PodcastEpisode>) -> Unit) {
+    apiHandler.getRecentEpisodes(libraryId) { podcastEpisodes ->
+      cb(podcastEpisodes)
+    }
+  }
+
   private fun loadLibraryItem(libraryItemId:String, cb: (LibraryItemWrapper?) -> Unit) {
     if (libraryItemId.startsWith("local")) {
       cb(DeviceManager.dbManager.getLocalLibraryItem(libraryItemId))
