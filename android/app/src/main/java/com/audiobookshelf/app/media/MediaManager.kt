@@ -145,15 +145,13 @@ class MediaManager(private var apiHandler: ApiHandler, var ctx: Context) {
   fun loadRecentEpisodes(libraryId:String, cb: (List<PodcastEpisode>) -> Unit) {
     apiHandler.getRecentEpisodes(libraryId) { podcastEpisodes ->
       podcastEpisodes.forEach { podcastEpisode ->
-        Log.d(tag, "loadRecentEpisodes, got episode: ${podcastEpisode.id}")
         val libraryItemId = podcastEpisode.libraryItemId
         if (libraryItemId == null) {
           Log.d(tag, "loadRecentEpisodes, got no libraryItemId for episode: ${podcastEpisode.id}")
         } else {
           apiHandler.getLibraryItemWithProgress(libraryItemId, podcastEpisode.id) { libraryItem ->
-            Log.d(tag, "loadRecentEpisodes, loaded item: ${libraryItem!!.id}")
             if (libraryItem == null) {
-              Log.d(tag, "loadRecentEpisodes, got no libraryItem for episode: ${podcastEpisode.id}")
+              Log.d(tag, "loadRecentEpisodes, got no library item for id $libraryItemId and episode ${podcastEpisode.id}")
             } else {
               serverLibraryItems.add(libraryItem)
               podcastEpisodeLibraryItemMap[podcastEpisode.id] = LibraryItemWithEpisode(libraryItem, podcastEpisode)
